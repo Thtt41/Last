@@ -1,0 +1,697 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Firebase Authentication</title>
+		<script>
+			const referrer = document.referrer;
+		  
+			if (!referrer.includes('Wiki.html')) {
+			  // Redirect back to a.html if not redirected from Wiki.html
+			  window.location.href = 'Wiki.html';
+			}
+		  </script>
+<style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="15f868d0-cad2-80d7-9ab5-f5ee4dc03a3a" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/met_vincent_van_gogh_irises.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🔥</span></div><h1 class="page-title">Firebase Authentication</h1><p class="page-description"></p><table class="properties"><tbody><tr class="property-row property-row-person"><th><span class="icon property-icon"><svg role="graphics-symbol" viewBox="0 0 16 16" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.45);flex-shrink:0" class="typesPerson"><path d="M10.9536 7.90088C12.217 7.90088 13.2559 6.79468 13.2559 5.38525C13.2559 4.01514 12.2114 2.92017 10.9536 2.92017C9.70142 2.92017 8.65137 4.02637 8.65698 5.39087C8.6626 6.79468 9.69019 7.90088 10.9536 7.90088ZM4.4231 8.03003C5.52368 8.03003 6.42212 7.05859 6.42212 5.83447C6.42212 4.63843 5.51245 3.68945 4.4231 3.68945C3.33374 3.68945 2.41846 4.64966 2.41846 5.84009C2.42407 7.05859 3.32251 8.03003 4.4231 8.03003ZM1.37964 13.168H5.49561C4.87231 12.292 5.43384 10.6074 6.78711 9.51807C6.18628 9.14746 5.37769 8.87231 4.4231 8.87231C1.95239 8.87231 0.262207 10.6917 0.262207 12.1628C0.262207 12.7974 0.548584 13.168 1.37964 13.168ZM7.50024 13.168H14.407C15.4009 13.168 15.7322 12.8423 15.7322 12.2864C15.7322 10.8489 13.8679 8.88354 10.9536 8.88354C8.04492 8.88354 6.17505 10.8489 6.17505 12.2864C6.17505 12.8423 6.50635 13.168 7.50024 13.168Z"></path></svg></span>Owner</th><td><span class="user"><span class="icon text-icon user-icon"><span class="user-icon-inner">T</span></span>Th </span></td></tr><tr class="property-row property-row-verification"><th><span class="icon property-icon"><svg role="graphics-symbol" viewBox="0 0 16 16" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.45);flex-shrink:0" class="typesVerification"><path d="M3.86426 14.0459H5.32715C5.45475 14.0459 5.56185 14.0892 5.64844 14.1758L6.6875 15.2148C7.13411 15.6615 7.56934 15.8825 7.99316 15.8779C8.42155 15.8779 8.85677 15.6569 9.29883 15.2148L10.3379 14.1758C10.429 14.0892 10.5384 14.0459 10.666 14.0459H12.1221C12.751 14.0459 13.2158 13.8955 13.5166 13.5947C13.8219 13.2939 13.9746 12.8268 13.9746 12.1934V10.7305C13.9746 10.6029 14.0202 10.4958 14.1113 10.4092L15.1436 9.37012C15.5902 8.92806 15.8112 8.49284 15.8066 8.06445C15.8066 7.63607 15.5856 7.19857 15.1436 6.75195L14.1113 5.71289C14.0202 5.6263 13.9746 5.52148 13.9746 5.39844V3.92871C13.9746 3.30436 13.8242 2.83952 13.5234 2.53418C13.2227 2.22884 12.7555 2.07617 12.1221 2.07617H10.666C10.5384 2.07617 10.429 2.03288 10.3379 1.94629L9.29883 0.914062C8.85677 0.462891 8.42155 0.239583 7.99316 0.244141C7.56934 0.244141 7.13411 0.467448 6.6875 0.914062L5.64844 1.94629C5.56185 2.03288 5.45475 2.07617 5.32715 2.07617H3.86426C3.23535 2.07617 2.76823 2.22656 2.46289 2.52734C2.16211 2.82812 2.01172 3.29525 2.01172 3.92871V5.39844C2.01172 5.52148 1.96842 5.6263 1.88184 5.71289L0.849609 6.75195C0.402995 7.19857 0.179688 7.63607 0.179688 8.06445C0.179688 8.49284 0.402995 8.92806 0.849609 9.37012L1.88184 10.4092C1.96842 10.4958 2.01172 10.6029 2.01172 10.7305V12.1934C2.01172 12.8223 2.16211 13.2871 2.46289 13.5879C2.76823 13.8932 3.23535 14.0459 3.86426 14.0459ZM7.23438 11.4277C7.10221 11.4277 6.98372 11.4004 6.87891 11.3457C6.77409 11.291 6.67155 11.2021 6.57129 11.0791L4.89648 9.04199C4.83724 8.96452 4.79167 8.88477 4.75977 8.80273C4.72786 8.7207 4.71191 8.63639 4.71191 8.5498C4.71191 8.37663 4.77116 8.22852 4.88965 8.10547C5.0127 7.97786 5.16081 7.91406 5.33398 7.91406C5.44336 7.91406 5.54134 7.93685 5.62793 7.98242C5.71452 8.02799 5.80339 8.10775 5.89453 8.22168L7.20703 9.88965L10.0371 5.36426C10.1829 5.12728 10.3675 5.00879 10.5908 5.00879C10.7594 5.00879 10.9098 5.06348 11.042 5.17285C11.1787 5.28223 11.2471 5.42578 11.2471 5.60352C11.2471 5.68099 11.2288 5.76302 11.1924 5.84961C11.1559 5.93164 11.1149 6.00911 11.0693 6.08203L7.87012 11.0723C7.78809 11.1908 7.69238 11.2796 7.58301 11.3389C7.47819 11.3981 7.36198 11.4277 7.23438 11.4277Z"></path></svg></span>Verification</th><td>Verified</td></tr><tr class="property-row property-row-multi_select"><th><span class="icon property-icon"><svg role="graphics-symbol" viewBox="0 0 16 16" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.45);flex-shrink:0" class="typesMultipleSelect"><path d="M1.91602 4.83789C2.44238 4.83789 2.87305 4.40723 2.87305 3.87402C2.87305 3.34766 2.44238 2.91699 1.91602 2.91699C1.38281 2.91699 0.952148 3.34766 0.952148 3.87402C0.952148 4.40723 1.38281 4.83789 1.91602 4.83789ZM5.1084 4.52344H14.3984C14.7607 4.52344 15.0479 4.23633 15.0479 3.87402C15.0479 3.51172 14.7607 3.22461 14.3984 3.22461H5.1084C4.74609 3.22461 4.45898 3.51172 4.45898 3.87402C4.45898 4.23633 4.74609 4.52344 5.1084 4.52344ZM1.91602 9.03516C2.44238 9.03516 2.87305 8.60449 2.87305 8.07129C2.87305 7.54492 2.44238 7.11426 1.91602 7.11426C1.38281 7.11426 0.952148 7.54492 0.952148 8.07129C0.952148 8.60449 1.38281 9.03516 1.91602 9.03516ZM5.1084 8.7207H14.3984C14.7607 8.7207 15.0479 8.43359 15.0479 8.07129C15.0479 7.70898 14.7607 7.42188 14.3984 7.42188H5.1084C4.74609 7.42188 4.45898 7.70898 4.45898 8.07129C4.45898 8.43359 4.74609 8.7207 5.1084 8.7207ZM1.91602 13.2324C2.44238 13.2324 2.87305 12.8018 2.87305 12.2686C2.87305 11.7422 2.44238 11.3115 1.91602 11.3115C1.38281 11.3115 0.952148 11.7422 0.952148 12.2686C0.952148 12.8018 1.38281 13.2324 1.91602 13.2324ZM5.1084 12.918H14.3984C14.7607 12.918 15.0479 12.6309 15.0479 12.2686C15.0479 11.9062 14.7607 11.6191 14.3984 11.6191H5.1084C4.74609 11.6191 4.45898 11.9062 4.45898 12.2686C4.45898 12.6309 4.74609 12.918 5.1084 12.918Z"></path></svg></span>Tags</th><td><span class="selected-value select-value-color-purple">Authentication</span><span class="selected-value select-value-color-red">Firebase</span><span class="selected-value select-value-color-yellow">JS</span></td></tr><tr class="property-row property-row-created_time"><th><span class="icon property-icon"><svg role="graphics-symbol" viewBox="0 0 16 16" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.45);flex-shrink:0" class="typesCreatedAt"><path d="M8 15.126C11.8623 15.126 15.0615 11.9336 15.0615 8.06445C15.0615 4.20215 11.8623 1.00293 7.99316 1.00293C4.13086 1.00293 0.938477 4.20215 0.938477 8.06445C0.938477 11.9336 4.1377 15.126 8 15.126ZM8 13.7383C4.85547 13.7383 2.33301 11.209 2.33301 8.06445C2.33301 4.91992 4.84863 2.39746 7.99316 2.39746C11.1377 2.39746 13.6738 4.91992 13.6738 8.06445C13.6738 11.209 11.1445 13.7383 8 13.7383ZM4.54102 8.91211H7.99316C8.30078 8.91211 8.54004 8.67285 8.54004 8.37207V3.8877C8.54004 3.58691 8.30078 3.34766 7.99316 3.34766C7.69238 3.34766 7.45312 3.58691 7.45312 3.8877V7.83203H4.54102C4.2334 7.83203 4.00098 8.06445 4.00098 8.37207C4.00098 8.67285 4.2334 8.91211 4.54102 8.91211Z"></path></svg></span>Created time</th><td><time>@December 17, 2024 7:47 PM</time></td></tr></tbody></table></header><div class="page-body"><h1 id="15f868d0-cad2-8090-9ddd-f90106943338" class="">Get Started with Firebase Authentication on Websites</h1><p id="15f868d0-cad2-803d-ac96-c6511bd70504" class="">You can use Firebase Authentication to allow users to sign in to your app using one or more sign-in methods, including email address and password sign-in, and federated identity providers such as Google Sign-in and Facebook Login. This tutorial gets you started with Firebase Authentication by showing you how to add email address and password sign-in to your app.</p><h2 id="15f868d0-cad2-80cd-a5fa-e4a6c6dd285d" class="">Add and initialize the Authentication SDK</h2><ol type="1" id="15f868d0-cad2-80e7-a759-c3d44a8b6f44" class="numbered-list" start="1"><li>If you haven&#x27;t already, <a href="https://firebase.google.com/docs/web/setup#add-sdk-and-initialize">install the Firebase JS SDK and initialize Firebase</a>.</li></ol><ol type="1" id="15f868d0-cad2-804f-bc2f-f12c54a10f6f" class="numbered-list" start="2"><li>Add the Firebase Authentication JS SDK and initialize Firebase Authentication:</li></ol><h2 id="15f868d0-cad2-80c4-bce2-d947bbd5995c" class="">(Optional) Prototype and test with Firebase Local Emulator Suite</h2><p id="15f868d0-cad2-80d1-a9af-f728a49b9ff0" class="">Before talking about how your app authenticates users, let&#x27;s introduce a set of tools you can use to prototype and test Authentication functionality: Firebase Local Emulator Suite. If you&#x27;re deciding among authentication techniques and providers, trying out different data models with public and private data using Authentication and Firebase Security Rules, or prototyping sign-in UI designs, being able to work locally without deploying live services can be a great idea.</p><p id="15f868d0-cad2-80c4-95d5-df6dbd1696c0" class="">An Authentication emulator is part of the Local Emulator Suite, which enables your app to interact with emulated database content and config, as well as optionally your emulated project resources (functions, other databases, and security rules).</p><p id="15f868d0-cad2-80d3-a226-e5a75851bb66" class="">Using the Authentication emulator involves just a few steps:</p><ol type="1" id="15f868d0-cad2-80db-983f-dfae8506440b" class="numbered-list" start="1"><li>Adding a line of code to your app&#x27;s test config to connect to the emulator.</li></ol><ol type="1" id="15f868d0-cad2-8057-897e-feba3fce5895" class="numbered-list" start="2"><li>From the root of your local project directory, running <code>firebase emulators:start</code>.</li></ol><ol type="1" id="15f868d0-cad2-8069-bfd3-eeb4d57d7392" class="numbered-list" start="3"><li>Using the Local Emulator Suite UI for interactive prototyping, or the Authentication emulator REST API for non-interactive testing.</li></ol><p id="15f868d0-cad2-80c4-91f3-d7006bbf1764" class="">A detailed guide is available at <a href="https://firebase.google.com/docs/emulator-suite/connect_auth">Connect your app to the Authentication emulator</a>. For more information, see the <a href="https://firebase.google.com/docs/emulator-suite">Local Emulator Suite introduction</a>.</p><p id="15f868d0-cad2-8092-a4d3-d32ebc19c519" class="">Now let&#x27;s continue with how to authenticate users.</p><h2 id="15f868d0-cad2-806c-8f36-f79993429c98" class="">Sign up new users</h2><p id="15f868d0-cad2-8058-bc7b-d0f21a1c4410" class="">Create a form that allows new users to register with your app using their email address and a password. When a user completes the form, validate the email address and password provided by the user, then pass them to the <code>createUserWithEmailAndPassword</code> method:</p><h2 id="15f868d0-cad2-804b-ad92-f7ff35139276" class="">Sign in existing users</h2><p id="15f868d0-cad2-809b-9b6a-dd956cba2474" class="">Create a form that allows existing users to sign in using their email address and password. When a user completes the form, call the <code>signInWithEmailAndPassword</code> method:</p><h2 id="15f868d0-cad2-8093-be2c-ded932fce36d" class="">Set an authentication state observer and get user data</h2><p id="15f868d0-cad2-80b9-b992-c132a2148a68" class="">For each of your app&#x27;s pages that need information about the signed-in user, attach an observer to the global authentication object. This observer gets called whenever the user&#x27;s sign-in state changes.</p><p id="15f868d0-cad2-80ad-aff9-dd1709278515" class="">Attach the observer using the <code>onAuthStateChanged</code> method. When a user successfully signs in, you can get information about the user in the observer.</p><h2 id="15f868d0-cad2-80e9-b4b9-dc05b783964c" class="">Next steps</h2><p id="15f868d0-cad2-80eb-b050-f60cd44e0cd9" class="">Learn how to add support for other identity providers and anonymous guest accounts:</p><ul id="15f868d0-cad2-8058-bfc9-e69a6eeeaaa3" class="toggle"><li><details open=""><summary>Google Sign-in</summary><h1 id="15f868d0-cad2-809a-b575-dfc0b2b75fa5" class="">Authenticate Using Google with JavaScript</h1><p id="15f868d0-cad2-80d6-8cdd-de73120a0041" class="">You can let your users authenticate with Firebase using their Google Accounts. You can either use the Firebase SDK to carry out the Google sign-in flow, or carry out the sign-in flow manually using the Sign In With Google library and passing the resulting ID token to Firebase.</p><h2 id="15f868d0-cad2-80d6-a054-e698f2532843" class="">Before you begin</h2><ol type="1" id="15f868d0-cad2-802b-8e2e-d86789e7b233" class="numbered-list" start="1"><li><a href="https://firebase.google.com/docs/web/setup">Add Firebase to your JavaScript project</a>.</li></ol><ol type="1" id="15f868d0-cad2-8055-946d-eab26d4c65c5" class="numbered-list" start="2"><li>Enable Google as a sign-in method in the Firebase console:<ol type="a" id="15f868d0-cad2-80d9-b666-f03a9f40d346" class="numbered-list" start="1"><li>In the <a href="https://console.firebase.google.com/">Firebase console</a>, open the <strong>Auth</strong> section.</li></ol><ol type="a" id="15f868d0-cad2-80d8-b9cd-edb5c81b01be" class="numbered-list" start="2"><li>On the <strong>Sign in method</strong> tab, enable the <strong>Google</strong> sign-in method and click <strong>Save</strong>.</li></ol></li></ol><h2 id="15f868d0-cad2-807a-b5a6-c77c6b24fc52" class="">Handle the sign-in flow with the Firebase SDK</h2><p id="15f868d0-cad2-80a2-89ea-eacc45d3699d" class="">If you are building a web app, the easiest way to authenticate your users with Firebase using their Google Accounts is to handle the sign-in flow with the Firebase JavaScript SDK. (If you want to authenticate a user in Node.js or other non-browser environment, you must handle the sign-in flow manually.)</p><p id="15f868d0-cad2-80fa-9ecd-f8f6d5928d68" class="">To handle the sign-in flow with the Firebase JavaScript SDK, follow these steps:</p><ol type="1" id="15f868d0-cad2-8099-9e4e-db3e275b33f7" class="numbered-list" start="1"><li>Create an instance of the Google provider object:</li></ol><ol type="1" id="15f868d0-cad2-806e-8ab7-d504fbdd8aeb" class="numbered-list" start="2"><li><strong>Optional</strong>: Specify additional OAuth 2.0 scopes that you want to request from the authentication provider. To add a scope, call <code>addScope</code>. For example: See the <a href="https://developers.google.com/identity/protocols/googlescopes">authentication provider documentation</a>.</li></ol><ol type="1" id="15f868d0-cad2-8050-bb9b-e42764416049" class="numbered-list" start="3"><li><strong>Optional</strong>: To localize the provider&#x27;s OAuth flow to the user&#x27;s preferred language without explicitly passing the relevant custom OAuth parameters, update the language code on the Auth instance before starting the OAuth flow. For example:</li></ol><ol type="1" id="15f868d0-cad2-804f-91b1-fb77a4d9c438" class="numbered-list" start="4"><li><strong>Optional</strong>: Specify additional custom OAuth provider parameters that you want to send with the OAuth request. To add a custom parameter, call <code>setCustomParameters</code> on the initialized provider with an object containing the key as specified by the OAuth provider documentation and the corresponding value. For example: Reserved required OAuth parameters are not allowed and will be ignored. See the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.GoogleAuthProvider#setCustomParameters">authentication provider reference</a> for more details.</li></ol><ol type="1" id="15f868d0-cad2-8027-88b9-f34d7e6a0b8c" class="numbered-list" start="5"><li>Authenticate with Firebase using the Google provider object. You can prompt your users to sign in with their Google Accounts either by opening a pop-up window or by redirecting to the sign-in page. The redirect method is preferred on mobile devices.<ul id="15f868d0-cad2-80a0-9ea4-d8d8fc96f2e6" class="bulleted-list"><li style="list-style-type:disc">To sign in with a pop-up window, call <code>signInWithPopup</code>: Also notice that you can retrieve the Google provider&#x27;s OAuth token which can be used to fetch additional data using the Google APIs.<p id="15f868d0-cad2-80cc-a7b9-fceaaa1e2dee" class="">This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithPopup">Auth Reference Docs</a>.</p></li></ul><ul id="15f868d0-cad2-804c-8733-e06b219ac68e" class="bulleted-list"><li style="list-style-type:disc">To sign in by redirecting to the sign-in page, call <code>signInWithRedirect</code>: Follow the <a href="https://firebase.google.com/docs/auth/web/redirect-best-practices">best practices</a> when using `signInWithRedirect`. Then, you can also retrieve the Google provider&#x27;s OAuth token by calling <code>getRedirectResult</code> when your page loads: This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult">Auth Reference Docs</a>.</li></ul></li></ol><h2 id="15f868d0-cad2-80d3-9acb-ff3a56826d87" class="">Authenticate with Firebase in a Chrome extension</h2><p id="15f868d0-cad2-806d-84ff-f8c077013ac6" class="">If you are building a Chrome extension app, see the <a href="https://firebase.google.com/docs/auth/web/chrome-extension#use_offscreen_documents">Offscreen Documents guide</a>.</p><h2 id="15f868d0-cad2-803a-a0f0-d6685c2cab52" class="">Next steps</h2><p id="15f868d0-cad2-8050-a626-c52a4ab968df" class="">After a user signs in for the first time, a new user account is created and linked to the credentials—that is, the user name and password, phone number, or auth provider information—the user signed in with. This new account is stored as part of your Firebase project, and can be used to identify a user across every app in your project, regardless of how the user signs in.</p><ul id="15f868d0-cad2-808b-90ba-cd25c201d387" class="bulleted-list"><li style="list-style-type:disc">In your apps, the recommended way to know the auth status of your user is to set an observer on the <code>Auth</code> object. You can then get the user&#x27;s basic profile information from the <code>User</code> object. See <a href="https://firebase.google.com/docs/auth/web/manage-users">Manage Users</a>.</li></ul><ul id="15f868d0-cad2-804d-a40c-d44a91686ee6" class="bulleted-list"><li style="list-style-type:disc">In your Firebase Realtime Database and Cloud Storage <a href="https://firebase.google.com/docs/database/security/user-security">Security Rules</a>, you can get the signed-in user&#x27;s unique user ID from the <code>auth</code> variable, and use it to control what data a user can access.</li></ul><p id="15f868d0-cad2-80f6-aeb7-c260e430ea4a" class="">You can allow users to sign in to your app using multiple authentication providers by linking auth provider credentials to an existing user account.</p><p id="15f868d0-cad2-8017-a511-e028dd9a0354" class="">To sign out a user, call <code><a href="https://firebase.google.com/docs/reference/js/auth#signout">signOut</a></code>:</p></details></li></ul><ul id="15f868d0-cad2-8078-877d-f6545947a5d2" class="toggle"><li><details open=""><summary>Facebook Login</summary><h1 id="15f868d0-cad2-80ea-9a8c-da399b1b3ba1" class="">Authenticate Using Facebook Login with JavaScript</h1><p id="15f868d0-cad2-8089-b5b0-fd20f1ec5988" class="">You can let your users authenticate with Firebase using their Facebook accounts by integrating Facebook Login into your app. You can integrate Facebook Login either by using the Firebase SDK to carry out the sign-in flow, or by carrying out the Facebook Login flow manually and passing the resulting access token to Firebase.</p><h2 id="15f868d0-cad2-8077-bc4f-c772c1302a69" class="">Before you begin</h2><ol type="1" id="15f868d0-cad2-809b-a464-d90a6aa064f8" class="numbered-list" start="1"><li><a href="https://firebase.google.com/docs/web/setup">Add Firebase to your JavaScript project</a>.</li></ol><ol type="1" id="15f868d0-cad2-803c-8804-f3656be3f77e" class="numbered-list" start="2"><li>On the <a href="https://developers.facebook.com/">Facebook for Developers</a> site, get the <strong>App ID</strong> and an <strong>App Secret</strong> for your app.</li></ol><ol type="1" id="15f868d0-cad2-80c6-8669-c6e0aa2e1e15" class="numbered-list" start="3"><li>Enable Facebook Login:<ol type="a" id="15f868d0-cad2-8036-9f38-f52d1d3f8c53" class="numbered-list" start="1"><li>In the <a href="https://console.firebase.google.com/">Firebase console</a>, open the <strong>Auth</strong> section.</li></ol><ol type="a" id="15f868d0-cad2-8032-b058-f7c204de6959" class="numbered-list" start="2"><li>On the <strong>Sign-in method</strong> tab, enable the <strong>Facebook</strong> sign-in method and specify the <strong>App ID</strong> and <strong>App Secret</strong> you got from Facebook.</li></ol><ol type="a" id="15f868d0-cad2-8041-9d97-cd2e03d79344" class="numbered-list" start="3"><li>Then, make sure your <strong>OAuth redirect URI</strong> (e.g. <code>my-app-12345.firebaseapp.com/__/auth/handler</code>) is listed as one of your <strong>OAuth redirect URIs</strong> in your Facebook app&#x27;s settings page on the <a href="https://developers.facebook.com/">Facebook for Developers</a> site in the <strong>Product Settings &gt; Facebook Login</strong> config.</li></ol></li></ol><h2 id="15f868d0-cad2-807e-b52c-e40d57715921" class="">Handle the sign-in flow with the Firebase SDK</h2><p id="15f868d0-cad2-8085-b439-cae38a0b0159" class="">If you are building a web app, the easiest way to authenticate your users with Firebase using their Facebook accounts is to handle the sign-in flow with the Firebase JavaScript SDK. (If you want to authenticate a user in Node.js or other non-browser environments, you must handle the sign-in flow manually.)</p><p id="15f868d0-cad2-809b-ada5-f31880fb493d" class="">To handle the sign-in flow with the Firebase JavaScript SDK, follow these steps:</p><ol type="1" id="15f868d0-cad2-80a4-b374-c7ab8ec4902a" class="numbered-list" start="1"><li>Create an instance of the Facebook provider object:</li></ol><ol type="1" id="15f868d0-cad2-80fd-bf87-fe5ca030e4c1" class="numbered-list" start="2"><li><strong>Optional</strong>: Specify additional OAuth 2.0 scopes that you want to request from the authentication provider. To add a scope, call <code>addScope</code>. For example: See the <a href="https://developers.facebook.com/docs/facebook-login/permissions">authentication provider documentation</a>.</li></ol><ol type="1" id="15f868d0-cad2-807c-ac2b-c7a5d9ecb08f" class="numbered-list" start="3"><li><strong>Optional</strong>: To localize the provider&#x27;s OAuth flow to the user&#x27;s preferred language without explicitly passing the relevant custom OAuth parameters, update the language code on the Auth instance before starting the OAuth flow. For example:</li></ol><ol type="1" id="15f868d0-cad2-80ad-8cf9-dd86670f8fb1" class="numbered-list" start="4"><li><strong>Optional</strong>: Specify additional custom OAuth provider parameters that you want to send with the OAuth request. To add a custom parameter, call <code>setCustomParameters</code> on the initialized provider with an object containing the key as specified by the OAuth provider documentation and the corresponding value. For example: Reserved required OAuth parameters are not allowed and will be ignored. See the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.FacebookAuthProvider#setCustomParameters">authentication provider reference</a> for more details.</li></ol><ol type="1" id="15f868d0-cad2-8037-9c2d-c078b6802c00" class="numbered-list" start="5"><li>Authenticate with Firebase using the Facebook provider object. You can prompt your users to sign in with their Facebook accounts either by opening a pop-up window or by redirecting to the sign-in page. The redirect method is preferred on mobile devices.<ul id="15f868d0-cad2-80c0-b15c-c1ecb214a489" class="bulleted-list"><li style="list-style-type:disc">To sign in with a pop-up window, call <code>signInWithPopup</code>: Also notice that you can retrieve the Facebook provider&#x27;s OAuth token which can be used to fetch additional data using the Facebook APIs.<p id="15f868d0-cad2-800c-b990-efd39fdbed82" class="">This is also where you can catch and handle errors. The Auth Reference Docs provide a list of error codes.</p></li></ul><ul id="15f868d0-cad2-8095-b452-d8dc07b1bad6" class="bulleted-list"><li style="list-style-type:disc">To sign in by redirecting to the sign-in page, call <code>signInWithRedirect</code>: Follow the <a href="https://firebase.google.com/docs/auth/web/redirect-best-practices">best practices</a> when using `signInWithRedirect`. Then, you can also retrieve the Facebook provider&#x27;s OAuth token by calling <code>getRedirectResult</code> when your page loads: This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult">Auth Reference Docs</a>.</li></ul></li></ol><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="15f868d0-cad2-807f-961b-e255f39d2490"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><p id="15f868d0-cad2-80cc-ba48-d923aad855a5" class=""><strong>Note:</strong> Facebook <a href="https://developers.facebook.com/blog/post/2018/06/08/enforce-https-facebook-login/">enforces HTTPS</a> and does not allow login with insecure hosts. When using Facebook in development mode with an <code><strong>http://localhost</strong></code> origin, you need to ensure that development mode is turned on for this Facebook App. In addition, sign-in will only be allowed with Facebook test accounts.</p></div></figure><h2 id="15f868d0-cad2-80bf-9544-c7053da4b5d5" class="">Authenticate with Firebase in a Chrome extension</h2><p id="15f868d0-cad2-8046-ae40-d9ff4138298d" class="">If you are building a Chrome extension app, see the <a href="https://firebase.google.com/docs/auth/web/chrome-extension#use_offscreen_documents">Offscreen Documents guide</a>.</p><h2 id="15f868d0-cad2-805b-b491-c6ba22d85b4e" class="">Next steps</h2><p id="15f868d0-cad2-8065-a918-e8f9fb20fd29" class="">After a user signs in for the first time, a new user account is created and linked to the credentials—that is, the user name and password, phone number, or auth provider information—the user signed in with. This new account is stored as part of your Firebase project, and can be used to identify a user across every app in your project, regardless of how the user signs in.</p><ul id="15f868d0-cad2-8080-94e8-e3f19a89efb1" class="bulleted-list"><li style="list-style-type:disc">In your apps, the recommended way to know the auth status of your user is to set an observer on the <code>Auth</code> object. You can then get the user&#x27;s basic profile information from the <code>User</code> object. See <a href="https://firebase.google.com/docs/auth/web/manage-users">Manage Users</a>.</li></ul><ul id="15f868d0-cad2-8045-9f7c-f4417d78e77e" class="bulleted-list"><li style="list-style-type:disc">In your Firebase Realtime Database and Cloud Storage <a href="https://firebase.google.com/docs/database/security/user-security">Security Rules</a>, you can get the signed-in user&#x27;s unique user ID from the <code>auth</code> variable, and use it to control what data a user can access.</li></ul><p id="15f868d0-cad2-8085-92af-dd397dea7b78" class="">You can allow users to sign in to your app using multiple authentication providers by linking auth provider credentials to an existing user account.</p><p id="15f868d0-cad2-8028-acf6-c97645f616a0" class="">To sign out a user, call <code><a href="https://firebase.google.com/docs/reference/js/auth#signout">signOut</a></code>:</p></details></li></ul><ul id="15f868d0-cad2-805b-b14c-f50daca34022" class="toggle"><li><details open=""><summary>Twitter Login</summary><h1 id="15f868d0-cad2-80a6-9db3-df34a061fdef" class="">Authenticate Using Twitter in JavaScript</h1><p id="15f868d0-cad2-8090-9072-c2b1d26c2afd" class="">You can let your users authenticate with Firebase using their Twitter accounts by integrating Twitter authentication into your app. You can integrate Twitter authentication either by using the Firebase SDK to carry out the sign-in flow, or by carrying out the Twitter OAuth flow manually and passing the resulting access token and secret to Firebase.</p><h2 id="15f868d0-cad2-8024-ae91-c777a5664552" class="">Before you begin</h2><ol type="1" id="15f868d0-cad2-80a4-81b0-fcdaf70aaf60" class="numbered-list" start="1"><li><a href="https://firebase.google.com/docs/web/setup">Add Firebase to your JavaScript project</a>.</li></ol><ol type="1" id="15f868d0-cad2-80ba-b85c-d4fd5f27ba17" class="numbered-list" start="2"><li>In the <a href="https://console.firebase.google.com/">Firebase console</a>, open the <strong>Auth</strong> section.</li></ol><ol type="1" id="15f868d0-cad2-8069-82b2-c41ae6570a3d" class="numbered-list" start="3"><li>On the <strong>Sign in method</strong> tab, enable the <strong>Twitter</strong> provider.</li></ol><ol type="1" id="15f868d0-cad2-8022-8227-c5ba99cc4a29" class="numbered-list" start="4"><li>Add the <strong>API key</strong> and <strong>API secret</strong> from that provider&#x27;s developer console to the provider configuration:<ol type="a" id="15f868d0-cad2-80f3-a7ec-c590d1e91bf5" class="numbered-list" start="1"><li><a href="https://apps.twitter.com/">Register your app</a> as a developer application on Twitter and get your app&#x27;s OAuth <strong>API key</strong> and <strong>API secret</strong>.</li></ol><ol type="a" id="15f868d0-cad2-8070-aeb5-c43254009781" class="numbered-list" start="2"><li>Make sure your Firebase <strong>OAuth redirect URI</strong> (e.g. <code>my-app-12345.firebaseapp.com/__/auth/handler</code>) is set as your <strong>Authorization callback URL</strong> in your app&#x27;s settings page on your <a href="https://apps.twitter.com/">Twitter app&#x27;s config</a>.</li></ol></li></ol><ol type="1" id="15f868d0-cad2-8005-a427-dac7bbab4a99" class="numbered-list" start="5"><li>Click <strong>Save</strong>.</li></ol><h2 id="15f868d0-cad2-800f-8aa5-fbc41c959315" class="">Handle the sign-in flow with the Firebase SDK</h2><p id="15f868d0-cad2-80a5-aaea-d1b6581b848f" class="">If you are building a web app, the easiest way to authenticate your users with Firebase using their Twitter accounts is to handle the sign-in flow with the Firebase JavaScript SDK. (If you want to authenticate a user in Node.js or other non-browser environment, you must handle the sign-in flow manually.)</p><p id="15f868d0-cad2-800e-9496-d71448a3ec02" class="">To handle the sign-in flow with the Firebase JavaScript SDK, follow these steps:</p><ol type="1" id="15f868d0-cad2-8076-aab8-c41d30eefa56" class="numbered-list" start="1"><li>Create an instance of the Twitter provider object:</li></ol><ol type="1" id="15f868d0-cad2-805f-a731-d104c64f4382" class="numbered-list" start="2"><li><strong>Optional</strong>: To localize the provider&#x27;s OAuth flow to the user&#x27;s preferred language without explicitly passing the relevant custom OAuth parameters, update the language code on the Auth instance before starting the OAuth flow. For example:</li></ol><ol type="1" id="15f868d0-cad2-8030-90c9-f329e28ed935" class="numbered-list" start="3"><li><strong>Optional</strong>: Specify additional custom OAuth provider parameters that you want to send with the OAuth request. To add a custom parameter, call <code>setCustomParameters</code> on the initialized provider with an object containing the key as specified by the OAuth provider documentation and the corresponding value. For example: Reserved required OAuth parameters are not allowed and will be ignored. See the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.TwitterAuthProvider#setCustomParameters">authentication provider reference</a> for more details.</li></ol><ol type="1" id="15f868d0-cad2-80ae-be26-d28f9085bac1" class="numbered-list" start="4"><li>Authenticate with Firebase using the Twitter provider object. You can prompt your users to sign in with their Twitter accounts either by opening a pop-up window or by redirecting to the sign-in page. The redirect method is preferred on mobile devices.<ul id="15f868d0-cad2-80c1-95aa-c4e900620473" class="bulleted-list"><li style="list-style-type:disc">To sign in with a pop-up window, call <code>signInWithPopup</code>: Also notice that you can retrieve the Twitter provider&#x27;s OAuth token which can be used to fetch additional data using the Twitter APIs.<p id="15f868d0-cad2-80e5-97ab-cc2aa4dbf2e7" class="">This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithPopup">Auth Reference Docs</a>.</p></li></ul><ul id="15f868d0-cad2-80f7-9956-ec7b9199505c" class="bulleted-list"><li style="list-style-type:disc">To sign in by redirecting to the sign-in page, call <code>signInWithRedirect</code>: Follow the <a href="https://firebase.google.com/docs/auth/web/redirect-best-practices">best practices</a> when using `signInWithRedirect`. Then, you can also retrieve the Twitter provider&#x27;s OAuth token by calling <code>getRedirectResult</code> when your page loads: This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult">Auth Reference Docs</a>.</li></ul></li></ol><h2 id="15f868d0-cad2-80d0-94f0-c4c4e1dc7f19" class="">Handle the sign-in flow manually</h2><p id="15f868d0-cad2-804c-a353-c1cef3715d0c" class="">You can also authenticate with Firebase using a Twitter account by handling the sign-in flow by calling the Twitter OAuth endpoints:</p><ol type="1" id="15f868d0-cad2-80da-80b3-e4ccecda678a" class="numbered-list" start="1"><li>Integrate Twitter authentication into your app by following the <a href="https://developer.twitter.com/en/docs/basics/authentication/guides/log-in-with-twitter">developer&#x27;s documentation</a>. At the end of the Twitter sign-in flow, you will receive an OAuth access token and an OAuth secret.</li></ol><ol type="1" id="15f868d0-cad2-8068-a38e-e287c8c04ac9" class="numbered-list" start="2"><li>If you need to sign in on a Node.js application, send the OAuth access token and the OAuth secret to the Node.js application.</li></ol><ol type="1" id="15f868d0-cad2-8056-8bde-f545e6a1b23c" class="numbered-list" start="3"><li>After a user successfully signs in with Twitter, exchange the OAuth access token and OAuth secret for a Firebase credential:<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15f868d0-cad2-805a-8b0b-cfc1695ce438" class="code"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">var credential = firebase.auth.TwitterAuthProvider.credential(token, secret);</code></pre></li></ol><ol type="1" id="15f868d0-cad2-8088-a571-c171a5453854" class="numbered-list" start="4"><li>Authenticate with Firebase using the Firebase credential:</li></ol><h2 id="15f868d0-cad2-8079-a4ec-f9ee1baadd69" class="">Authenticate with Firebase in a Chrome extension</h2><p id="15f868d0-cad2-80f2-9c3c-df803fbe5c4a" class="">If you are building a Chrome extension app, see the <a href="https://firebase.google.com/docs/auth/web/chrome-extension#use_offscreen_documents">Offscreen Documents guide</a>.</p><h2 id="15f868d0-cad2-80d4-a68c-c9f866af632b" class="">Next steps</h2><p id="15f868d0-cad2-8057-b0bf-fb509d172506" class="">After a user signs in for the first time, a new user account is created and linked to the credentials—that is, the user name and password, phone number, or auth provider information—the user signed in with. This new account is stored as part of your Firebase project, and can be used to identify a user across every app in your project, regardless of how the user signs in.</p><ul id="15f868d0-cad2-80c3-bb31-f3238f8496ec" class="bulleted-list"><li style="list-style-type:disc">In your apps, the recommended way to know the auth status of your user is to set an observer on the <code>Auth</code> object. You can then get the user&#x27;s basic profile information from the <code>User</code> object. See <a href="https://firebase.google.com/docs/auth/web/manage-users">Manage Users</a>.</li></ul><ul id="15f868d0-cad2-8089-91d5-c440279b6884" class="bulleted-list"><li style="list-style-type:disc">In your Firebase Realtime Database and Cloud Storage <a href="https://firebase.google.com/docs/database/security/user-security">Security Rules</a>, you can get the signed-in user&#x27;s unique user ID from the <code>auth</code> variable, and use it to control what data a user can access.</li></ul><p id="15f868d0-cad2-8004-a960-f9db3723acd4" class="">You can allow users to sign in to your app using multiple authentication providers by linking auth provider credentials to an existing user account.</p><p id="15f868d0-cad2-805b-b99d-d0a71e2312a0" class="">To sign out a user, call <code><a href="https://firebase.google.com/docs/reference/js/auth#signout">signOut</a></code>:</p></details></li></ul><ul id="15f868d0-cad2-80a7-b355-f44a87d57672" class="toggle"><li><details open=""><summary>GitHub Login</summary><h1 id="15f868d0-cad2-8018-9a81-e2b01ab0e38d" class="">Authenticate Using GitHub with JavaScript</h1><p id="15f868d0-cad2-8069-84b3-cc53560883b6" class="">You can let your users authenticate with Firebase using their GitHub accounts by integrating GitHub authentication into your app. You can integrate GitHub authentication either by using the Firebase SDK to carry out the sign-in flow, or by carrying out the GitHub OAuth 2.0 flow manually and passing the resulting access token to Firebase.</p><h2 id="15f868d0-cad2-80b5-b66c-db09196f736a" class="">Before you begin</h2><ol type="1" id="15f868d0-cad2-80f7-ad8c-f64b816743e0" class="numbered-list" start="1"><li><a href="https://firebase.google.com/docs/web/setup">Add Firebase to your JavaScript project</a>.</li></ol><ol type="1" id="15f868d0-cad2-8017-8fe2-cea3ba04e994" class="numbered-list" start="2"><li>In the <a href="https://console.firebase.google.com/">Firebase console</a>, open the <strong>Auth</strong> section.</li></ol><ol type="1" id="15f868d0-cad2-8032-86f8-ca0f0bea97b3" class="numbered-list" start="3"><li>On the <strong>Sign in method</strong> tab, enable the <strong>GitHub</strong> provider.</li></ol><ol type="1" id="15f868d0-cad2-80f1-a43b-d9ccae72a398" class="numbered-list" start="4"><li>Add the <strong>Client ID</strong> and <strong>Client Secret</strong> from that provider&#x27;s developer console to the provider configuration:<ol type="a" id="15f868d0-cad2-8002-aa19-fa92d57c0318" class="numbered-list" start="1"><li><a href="https://github.com/settings/applications/new">Register your app</a> as a developer application on GitHub and get your app&#x27;s OAuth 2.0 <strong>Client ID</strong> and <strong>Client Secret</strong>.</li></ol><ol type="a" id="15f868d0-cad2-8073-93e9-e2e37c1d3068" class="numbered-list" start="2"><li>Make sure your Firebase <strong>OAuth redirect URI</strong> (e.g. <code>my-app-12345.firebaseapp.com/__/auth/handler</code>) is set as your <strong>Authorization callback URL</strong> in your app&#x27;s settings page on your <a href="https://github.com/settings/developers">GitHub app&#x27;s config</a>.</li></ol></li></ol><ol type="1" id="15f868d0-cad2-8092-92a1-d0a280080502" class="numbered-list" start="5"><li>Click <strong>Save</strong>.</li></ol><h2 id="15f868d0-cad2-8008-bccc-da61bc780951" class="">Handle the sign-in flow with the Firebase SDK</h2><p id="15f868d0-cad2-80ea-9723-c5d223cd390e" class="">If you are building a web app, the easiest way to authenticate your users with Firebase using their GitHub accounts is to handle the sign-in flow with the Firebase JavaScript SDK. (If you want to authenticate a user in Node.js or other non-browser environment, you must handle the sign-in flow manually.)</p><p id="15f868d0-cad2-8002-a88a-f9ff691bb23f" class="">To handle the sign-in flow with the Firebase JavaScript SDK, follow these steps:</p><ol type="1" id="15f868d0-cad2-8022-8d82-c43d42a72b18" class="numbered-list" start="1"><li>Create an instance of the GitHub provider object:</li></ol><ol type="1" id="15f868d0-cad2-806c-89f5-c9d1a862b065" class="numbered-list" start="2"><li><strong>Optional</strong>: Specify additional OAuth 2.0 scopes that you want to request from the authentication provider. To add a scope, call <code>addScope</code>. For example: See the <a href="https://developer.github.com/v3/oauth/#scopes">authentication provider documentation</a>.</li></ol><ol type="1" id="15f868d0-cad2-801e-9920-cb3efd679721" class="numbered-list" start="3"><li><strong>Optional</strong>: Specify additional custom OAuth provider parameters that you want to send with the OAuth request. To add a custom parameter, call <code>setCustomParameters</code> on the initialized provider with an object containing the key as specified by the OAuth provider documentation and the corresponding value. For example: Reserved required OAuth parameters are not allowed and will be ignored. See the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.GithubAuthProvider#setCustomParameters">authentication provider reference</a> for more details.</li></ol><ol type="1" id="15f868d0-cad2-8067-a4e2-eae3968a0c39" class="numbered-list" start="4"><li>Authenticate with Firebase using the GitHub provider object. You can prompt your users to sign in with their GitHub accounts either by opening a pop-up window or by redirecting to the sign-in page. The redirect method is preferred on mobile devices.<ul id="15f868d0-cad2-8084-9e3f-eb8bf7cb3579" class="bulleted-list"><li style="list-style-type:disc">To sign in with a pop-up window, call <code>signInWithPopup</code>: Also notice that you can retrieve the GitHub provider&#x27;s OAuth token which can be used to fetch additional data using the GitHub APIs.<p id="15f868d0-cad2-80d3-86c5-c6fe1e6f0cc9" class="">This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInWithPopup">Auth Reference Docs</a>.</p></li></ul><ul id="15f868d0-cad2-80c0-b103-e5bc4980b7c2" class="bulleted-list"><li style="list-style-type:disc">To sign in by redirecting to the sign-in page, call <code>signInWithRedirect</code>: Follow the <a href="https://firebase.google.com/docs/auth/web/redirect-best-practices">best practices</a> when using `signInWithRedirect`. Then, you can also retrieve the GitHub provider&#x27;s OAuth token by calling <code>getRedirectResult</code> when your page loads: This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#getRedirectResult">Auth Reference Docs</a>.</li></ul></li></ol><h2 id="15f868d0-cad2-8021-b961-efd043246237" class="">Handle the sign-in flow manually</h2><p id="15f868d0-cad2-8060-beea-dadc744fc22f" class="">You can also authenticate with Firebase using a GitHub account by handling the sign-in flow by calling the GitHub OAuth 2.0 endpoints:</p><ol type="1" id="15f868d0-cad2-80ae-a5ae-d0caceedf199" class="numbered-list" start="1"><li>Integrate GitHub authentication into your app by following the <a href="https://developer.github.com/v3/oauth/#web-application-flow">developer&#x27;s documentation</a>. At the end of the GitHub sign-in flow, you will receive an OAuth 2.0 access token.</li></ol><ol type="1" id="15f868d0-cad2-80a5-922d-d49fc8ecdb6c" class="numbered-list" start="2"><li>If you need to sign in on a Node.js application, send the OAuth access token to the Node.js application.</li></ol><ol type="1" id="15f868d0-cad2-809a-b6ac-effd499ec5f8" class="numbered-list" start="3"><li>After a user successfully signs in with GitHub, exchange the OAuth 2.0 access token for a Firebase credential:</li></ol><ol type="1" id="15f868d0-cad2-8014-b3c6-c6c8623c8212" class="numbered-list" start="4"><li>Authenticate with Firebase using the Firebase credential:</li></ol><h2 id="15f868d0-cad2-8009-aeb3-d9e7fd7a521b" class="">Authenticate with Firebase in a Chrome extension</h2><p id="15f868d0-cad2-80da-888c-fcb3521ccede" class="">If you are building a Chrome extension app, see the <a href="https://firebase.google.com/docs/auth/web/chrome-extension#use_offscreen_documents">Offscreen Documents guide</a>.</p><h2 id="15f868d0-cad2-8012-ba33-e129caf38af6" class="">Next steps</h2><p id="15f868d0-cad2-804b-9229-cd7d899dc92b" class="">After a user signs in for the first time, a new user account is created and linked to the credentials—that is, the user name and password, phone number, or auth provider information—the user signed in with. This new account is stored as part of your Firebase project, and can be used to identify a user across every app in your project, regardless of how the user signs in.</p><ul id="15f868d0-cad2-8052-9311-fa09ee75a55f" class="bulleted-list"><li style="list-style-type:disc">In your apps, the recommended way to know the auth status of your user is to set an observer on the <code>Auth</code> object. You can then get the user&#x27;s basic profile information from the <code>User</code> object. See <a href="https://firebase.google.com/docs/auth/web/manage-users">Manage Users</a>.</li></ul><ul id="15f868d0-cad2-808f-b38f-ed588024899f" class="bulleted-list"><li style="list-style-type:disc">In your Firebase Realtime Database and Cloud Storage <a href="https://firebase.google.com/docs/database/security/user-security">Security Rules</a>, you can get the signed-in user&#x27;s unique user ID from the <code>auth</code> variable, and use it to control what data a user can access.</li></ul><p id="15f868d0-cad2-80e3-b261-cf93c1694046" class="">You can allow users to sign in to your app using multiple authentication providers by linking auth provider credentials to an existing user account.</p><p id="15f868d0-cad2-80b3-870c-ddd03165face" class="">To sign out a user, call <code><a href="https://firebase.google.com/docs/reference/js/auth#signout">signOut</a></code>:</p></details></li></ul><ul id="15f868d0-cad2-80d6-b416-c317c0635e5d" class="toggle"><li><details open=""><summary>Anonymous sign-in</summary><h1 id="15f868d0-cad2-809d-a0b5-c4ee254eafb4" class="">Authenticate with Firebase Anonymously Using JavaScript</h1><p id="15f868d0-cad2-80b2-9858-d3a189185e1f" class="">You can use Firebase Authentication to create and use temporary anonymous accounts to authenticate with Firebase. These temporary anonymous accounts can be used to allow users who haven&#x27;t yet signed up to your app to work with data protected by security rules. If an anonymous user decides to sign up to your app, you can <a href="https://firebase.google.com/docs/auth/web/account-linking">link their sign-in credentials to the anonymous account</a> so that they can continue to work with their protected data in future sessions.</p><h2 id="15f868d0-cad2-80c4-b192-facd9a01b76b" class="">Before you begin</h2><ol type="1" id="15f868d0-cad2-808a-9b36-ca03c1d588b0" class="numbered-list" start="1"><li><a href="https://firebase.google.com/docs/web/setup">Add Firebase to your JavaScript project</a>.</li></ol><ol type="1" id="15f868d0-cad2-80e4-905e-c0ceeec5ed01" class="numbered-list" start="2"><li>If you haven&#x27;t yet connected your app to your Firebase project, do so from the <a href="https://console.firebase.google.com/">Firebase console</a>.</li></ol><ol type="1" id="15f868d0-cad2-8090-835d-fef862980250" class="numbered-list" start="3"><li>Enable anonymous auth:<ol type="a" id="15f868d0-cad2-80b1-95e5-e5bafdeb008b" class="numbered-list" start="1"><li>In the <a href="https://console.firebase.google.com/">Firebase console</a>, open the <strong>Auth</strong> section.</li></ol><ol type="a" id="15f868d0-cad2-8084-a22b-c834145b41cb" class="numbered-list" start="2"><li>On the <strong>Sign-in Methods</strong> page, enable the <strong>Anonymous</strong> sign-in method.</li></ol><ol type="a" id="15f868d0-cad2-80bd-8bcb-f04ddece19bb" class="numbered-list" start="3"><li><strong>Optional</strong>: If you&#x27;ve upgraded your project to <a href="https://firebase.google.com/auth#identity-platform">Firebase Authentication with Identity Platform</a>, you can enable automatic clean-up. When you enable this setting, anonymous accounts older than 30 days will be automatically deleted. In projects with automatic clean-up enabled, anonymous authentication will no longer count toward usage limits or billing quotas. See <a href="https://firebase.google.com/docs/auth/web/anonymous-auth#auto-cleanup">Automatic clean-up</a>.</li></ol></li></ol><h2 id="15f868d0-cad2-80f5-a667-f7df2a355b1a" class="">Authenticate with Firebase anonymously</h2><p id="15f868d0-cad2-801f-91e7-d3c3bdf008e5" class="">When a signed-out user uses an app feature that requires authentication with Firebase, sign in the user anonymously by completing the following steps:</p><ol type="1" id="15f868d0-cad2-80c6-885a-e0d472cf6b6a" class="numbered-list" start="1"><li>Call the <code>signInAnonymously</code> method: This is also where you can catch and handle errors. For a list of error codes have a look at the <a href="https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signInAnonymously">Auth Reference Docs</a>.</li></ol><ol type="1" id="15f868d0-cad2-809e-b0fb-f02ca8955f52" class="numbered-list" start="2"><li>If the <code>signInAnonymously</code> method completes without error, the observer registered in the <code>onAuthStateChanged</code> will trigger and you can get the anonymous user&#x27;s account data from the <code>User</code> object:</li></ol><p id="15f868d0-cad2-808e-bed8-dc2a6672be42" class="">To protect your project from abuse, Firebase limits the number of new email/password and anonymous sign-ups that your application can have from the same IP address in a short period of time. You can request and schedule temporary changes to this quota from the <a href="https://console.firebase.google.com/project/_/authentication/providers">Firebase console</a>.</p><h2 id="15f868d0-cad2-805d-89b6-df92e16a59d5" class="">Convert an anonymous account to a permanent account</h2><p id="15f868d0-cad2-80c1-ac34-df67a0045b38" class="">When an anonymous user signs up to your app, you might want to allow them to continue their work with their new account—for example, you might want to make the items the user added to their shopping cart before they signed up available in their new account&#x27;s shopping cart. To do so, complete the following steps:</p><ol type="1" id="15f868d0-cad2-80bb-909c-f4645fdb48de" class="numbered-list" start="1"><li>When the user signs up, complete the sign-in flow for the user&#x27;s authentication provider up to, but not including, calling one of the <code>Auth.signInWith</code> methods. For example, get the user&#x27;s Google ID token, Facebook access token, or email address and password.</li></ol><ol type="1" id="15f868d0-cad2-803e-96e3-f7ebd752be1f" class="numbered-list" start="2"><li>Get an <code>AuthCredential</code> for the new authentication provider:<h3 id="15f868d0-cad2-80ed-ab31-ceb512d71391" class="">Google Sign-In</h3><h3 id="15f868d0-cad2-80f8-bfae-fcd96436cfbd" class="">Facebook Login</h3><h3 id="15f868d0-cad2-80b7-82d3-de0aa9ad4221" class="">Email-password sign-in</h3></li></ol><ol type="1" id="15f868d0-cad2-8020-99b2-ca5fdc6311e1" class="numbered-list" start="3"><li>Pass the <code>AuthCredential</code> object to the sign-in user&#x27;s <code>link</code> method:</li></ol><p id="15f868d0-cad2-8006-901e-c5d43b7bf32e" class="">If the call to <code>link</code> succeeds, the user&#x27;s new account can access the anonymous account&#x27;s Firebase data.</p><p id="15f868d0-cad2-808e-8508-ef3a4e3443dd" class="">This technique can also be used to <a href="https://firebase.google.com/docs/auth/web/account-linking">link any two accounts</a>.</p><h2 id="15f868d0-cad2-80ee-ae7e-f7ce8dbcc0fa" class="">Automatic clean-up</h2><p id="15f868d0-cad2-80b7-a6fd-e54e586b1e7d" class="">If you&#x27;ve upgraded your project to <a href="https://firebase.google.com/docs/auth#identity-platform">Firebase Authentication with Identity Platform</a>, you can enable automatic clean-up in the Firebase console. When you enable this feature you allow Firebase to automatically delete anonymous accounts older than 30 days. In projects with automatic clean-up enabled, anonymous authentication will not count toward usage limits or billing quotas.</p><ul id="15f868d0-cad2-80bb-8ca1-de9a2482eb9d" class="bulleted-list"><li style="list-style-type:disc">Any anonymous accounts created after enabling automatic clean-up might be automatically deleted any time after 30 days post-creation.</li></ul><ul id="15f868d0-cad2-8042-badc-c7b702586f82" class="bulleted-list"><li style="list-style-type:disc">Existing anonymous accounts will be eligible for automatic deletion 30 days after enabling automatic clean-up.</li></ul><ul id="15f868d0-cad2-8019-87d1-c95513c4e796" class="bulleted-list"><li style="list-style-type:disc">If you turn automatic clean-up off, any anonymous accounts scheduled to be deleted will remain scheduled to be deleted.</li></ul><ul id="15f868d0-cad2-8093-83ca-e0720caa262f" class="bulleted-list"><li style="list-style-type:disc">If you &quot;upgrade&quot; an anonymous account by linking it to any sign-in method, the account will not get automatically deleted.</li></ul><p id="15f868d0-cad2-8058-9a19-c005abb1ba30" class="">If you want to see how many users will be affected before you enable this feature, and you&#x27;ve upgraded your project to <a href="https://firebase.google.com/docs/auth#identity-platform">Firebase Authentication with Identity Platform</a>, you can filter by <code>is_anon</code> in <a href="https://cloud.google.com/logging/docs">Cloud Logging</a>.</p><h2 id="15f868d0-cad2-80d6-9090-fedf303f7f00" class="">Next steps</h2><p id="15f868d0-cad2-8051-bea7-e0a305e032f9" class="">Now that users can authenticate with Firebase, you can control their access to data in your Firebase database using <a href="https://firebase.google.com/docs/database/security#section-authorization">Firebase rules</a>.</p></details></li></ul><p id="15f868d0-cad2-80fd-bed8-ce160e9cfdd4" class="">
+</p><h2 id="15f868d0-cad2-8058-82b0-c37cb5927d91" class=""><strong>Link Multiple Auth Providers to an Account Using JavaScript:</strong></h2><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="15f868d0-cad2-80a9-8651-c5d00a3c8019"><div style="font-size:1.5em"><span class="icon">🚨</span></div><div style="width:100%"><p id="15f868d0-cad2-8046-9eea-f251b6ac0950" class=""><strong>Important</strong>: There is a <a href="https://github.com/firebase/firebase-js-sdk/issues/7675">known issue</a> that prevents <code><strong>linkWithCredentials()</strong></code> from working correctly in some projects. See the issue report for a workaround and the status of a fix.</p></div></figure><p id="15f868d0-cad2-8046-9d12-e81c862e474e" class="">You can allow users to sign in to your app using multiple authentication providers by linking auth provider credentials to an existing user account. Users are identifiable by the same Firebase user ID regardless of the authentication provider they used to sign in. For example, a user who signed in with a password can link a Google account and sign in with either method in the future. Or, an anonymous user can link a Facebook account and then, later, sign in with Facebook to continue using your app.</p><h2 id="15f868d0-cad2-80f1-a179-d3fd3f174dfc" class="">Before you begin</h2><p id="15f868d0-cad2-80a7-bd43-c0f836999da3" class="">Add support for two or more authentication providers (possibly including anonymous authentication) to your app.</p><h2 id="15f868d0-cad2-8076-9408-e8715388448d" class="">Link federated auth provider credentials to a user account</h2><p id="15f868d0-cad2-80a7-8aa8-c758ad232fc0" class="">To link credentials from an auth provider such as Google or Facebook to an existing user account:</p><ol type="1" id="15f868d0-cad2-8048-9007-ff9b11cabce4" class="numbered-list" start="1"><li>Sign in the user using any authentication provider or method.</li></ol><ol type="1" id="15f868d0-cad2-8012-9cf5-e28d9b9e4c44" class="numbered-list" start="2"><li>Get the <code>AuthProvider</code> object that corresponds to the provider you want to link to the user&#x27;s account. Examples:</li></ol><ol type="1" id="15f868d0-cad2-80f3-bcf3-ff8112d22f73" class="numbered-list" start="3"><li>Prompt the user to sign in with the provider you want to link. You can prompt your users to sign in either by opening a pop-up window or by redirecting to the provider&#x27;s sign-in page. The redirect method is preferred on mobile devices.If the user is signed in successfully, the user&#x27;s account with the provider is linked to the user&#x27;s account in your Firebase project.<ul id="15f868d0-cad2-80a4-9c73-d1f0007fface" class="bulleted-list"><li style="list-style-type:disc">To sign in with a pop-up window, call <code>linkWithPopup</code>:</li></ul><ul id="15f868d0-cad2-8057-9a53-c2dde1f04549" class="bulleted-list"><li style="list-style-type:disc">To sign in by redirecting to the provider&#x27;s sign-in page, call <code>linkWithRedirect</code>: Follow the <a href="https://firebase.google.com/docs/auth/web/redirect-best-practices">best practices</a> when using `linkWithRedirect`. After the user signs in, they are redirected back to your page. Then, you can retrieve the sign-in result by calling <code>getRedirectResult</code> when your page loads:</li></ul><p id="15f868d0-cad2-803b-a73f-cdd0214ab3a9" class="">Account linking will fail if the credentials are already linked to another user account. In this situation, you must handle merging the accounts and associated data as appropriate for your app:</p></li></ol><h2 id="15f868d0-cad2-8032-ad58-cc7bb27900ff" class="">Link email address and password credentials to a user account</h2><p id="15f868d0-cad2-8071-ab22-d448b0d46763" class="">To add email address and password credentials to an existing user account:</p><ol type="1" id="15f868d0-cad2-8051-a647-db4c5bf71a26" class="numbered-list" start="1"><li>Sign in the user using any authentication provider or method.</li></ol><ol type="1" id="15f868d0-cad2-802b-b736-d11f67662cff" class="numbered-list" start="2"><li>Prompt the user for an email address and new password.</li></ol><ol type="1" id="15f868d0-cad2-808c-87b6-ffc80a6e28fd" class="numbered-list" start="3"><li>Create an <code>AuthCredential</code> object with the email address and password:</li></ol><ol type="1" id="15f868d0-cad2-80fd-8100-c1f189be025b" class="numbered-list" start="4"><li>Pass the <code>AuthCredential</code> object to the signed-in user&#x27;s <code>linkWithCredential</code> method:<p id="15f868d0-cad2-80f4-b52d-f3ee169ec33d" class="">The call to <code>linkWithCredential</code> will fail if the credentials are already linked to another user account. In this situation, you must handle merging the accounts and associated data as appropriate for your app (see example above).</p></li></ol><h2 id="15f868d0-cad2-80c1-a366-e83351553737" class="">Unlink an auth provider from a user account</h2><p id="15f868d0-cad2-80f9-9aee-c12bad9cdfe3" class="">You can unlink an auth provider from an account, so that the user can no longer sign in with that provider.</p><p id="15f868d0-cad2-8037-a113-e7632a34393a" class="">To unlink an auth provider from a user account, pass the provider ID to the <code>unlink</code> method. You can get the provider IDs of the auth providers linked to a user from the <code>providerData</code> property.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
